@@ -64,3 +64,73 @@ No custom encryption algorithm will be implemented.
 ## Current status
 
 Checkpoint 1 is design only. The application, tests, and build instructions for the finished program will be added in later checkpoints.
+
+## Checkpoint 2 — implementation update
+
+The Checkpoint 1 sections above describe the initial plan.
+This section records the current implementation and supersedes any
+conflicting planned behaviour.
+
+### Implemented architecture
+
+    Terminal interface (menu.hpp and terminal.hpp)
+      → account management and validation (menu.hpp)
+      → record encoding/decoding (entries.hpp)
+      → key derivation and encryption/decryption (crypto.hpp)
+      → encrypted file reading/writing (storage.hpp)
+
+    Application startup and authentication: password_manager.cpp
+
+The account-management responsibilities are implemented in menu.hpp
+with the record representation in entries.hpp; there is no separate
+multi-user login system.
+
+On opening an existing vault:
+1. Read the encrypted file and check its format and size.
+2. Read the master passphrase using hidden input.
+3. Derive the key using the stored salt.
+4. Verify and decrypt the ciphertext.
+5. Parse records and enter the account menu only after success.
+
+On adding or deleting an account:
+1. Update the in-memory records.
+2. Encode records into plaintext bytes in memory.
+3. Encrypt with a new random nonce.
+4. Write a private temporary file, sync it, and rename it over the vault.
+
+A separate advisory session lock prevents cooperating application
+instances from accessing the vault concurrently.
+
+### Interface change
+
+The original View feature is now a masked-details screen.
+It displays the account name and username, but always displays
+the password as [hidden].
+
+Password generation and password retrieval/export are not implemented.
+This follows the Checkpoint 2 requirement not to print passwords in
+cleartext, but limits the usefulness of this educational prototype.
+
+### Concrete vault decisions
+
+- Location: ~/.cpp_password_manager/vault.vault
+- Private application directory: owner-only access.
+- Saved vault permissions: 0600.
+- VLT1 key derivation: Argon2id, opslimit 2, memory limit 64 MiB.
+- Encryption: libsodium secretbox, with a new nonce per save.
+- Maximum encrypted plaintext size: 1 MiB.
+- Maximum records: 100.
+- Maximum field size: 4096 bytes.
+- Length prefixes and record count: unsigned 32-bit little-endian.
+
+### Remaining security limitations
+
+Buffer clearing is best effort and does not remove every possible C++
+string copy. Secrets may be exposed through swap, process memory,
+or a compromised operating system.
+
+Input length is checked after reading rather than during reading.
+Automatic inactivity locking, rollback detection, secure backup,
+and full power-loss durability are not implemented.
+
+The session lock is advisory, not protection against malicious processes.
