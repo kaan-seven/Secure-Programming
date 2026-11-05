@@ -35,7 +35,7 @@ sudo apt install build-essential git libsodium-dev
 ## Get the source
 
 ```bash
-git clone [https://github.com/kaan-seven/Secure-Programming.git](https://github.com/kaan-seven/Secure-Programming.git)
+git clone https://github.com/kaan-seven/Secure-Programming.git
 cd Secure-Programming
 ```
 
