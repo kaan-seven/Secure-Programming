@@ -2,6 +2,7 @@
 #include "crypto.hpp"
 #include "entries.hpp"
 #include "storage.hpp"
+#include "menu.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -154,7 +155,7 @@ int main() {
         }
 
         std::cout << "Stored accounts: " << entries.size() << '\n';
-        std::cout << "Account menu will be added next.\n";
+        vaultmenu::run(entries, key, file, path);
         return 0;
     } catch (const std::exception& error) {
         std::cerr << "Error: " << error.what() << '\n';
