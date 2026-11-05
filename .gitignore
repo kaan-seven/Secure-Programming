@@ -1,0 +1,14 @@
+# Compiled program and build files
+/build/
+/password_manager
+*.o
+
+# Local vault files and temporary saves
+*.vault
+*.vault.tmp*
+.cpp_password_vault
+.cpp_password_vault.tmp*
+
+# Editor temporary files
+*.swp
+*~
