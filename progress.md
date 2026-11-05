@@ -50,3 +50,12 @@ successfully, and all automated tests passed in the configured Ubuntu/WSL
 environment. A separate clean-machine test has not been performed.
 
 Uploading the completed local commits to GitHub is the remaining step.
+
+## Fresh-checkout verification
+
+A separate temporary clone of the committed local repository was created.
+The application and all three test programs built successfully from that
+clone, and all automated tests passed.
+
+This confirms the committed files are sufficient in the configured
+Ubuntu/WSL environment. It is not a separate clean-machine test.
